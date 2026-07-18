@@ -1,5 +1,11 @@
 const myLibrary = [];
 
+const container = document.querySelector("#library-container");
+const bookDialog = document.querySelector("#book-dialog");
+const bookForm = document.querySelector("#book-form");
+const newBookButton = document.querySelector("#new-book-button");
+const closeDialogButton = document.querySelector("#close-dialog-button");
+
 function Book(title, author, pages, isRead) {
     this.id = crypto.randomUUID();
     this.title = title;
@@ -14,8 +20,6 @@ function addBookToLibrary(title, author, pages, isRead) {
 }
 
 function displayBooks() {
-    const container = document.querySelector("#library-container");
-
     container.innerHTML = "";
 
     myLibrary.forEach((book) => {
@@ -42,7 +46,33 @@ function displayBooks() {
     });
 }
 
+newBookButton.addEventListener("click", () => {
+    bookDialog.showModal();
+});
+
+closeDialogButton.addEventListener("click", () => {
+    bookForm.reset();
+    bookDialog.close();
+});
+
+bookForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    const titleValue = formData.get("title");
+    const authorValue = formData.get("author");
+    const pagesValue = parseInt(formData.get("pages"));
+    const isReadValue = formData.has("isRead");
+
+    addBookToLibrary(titleValue, authorValue, pagesValue, isReadValue);
+    displayBooks();
+
+    bookForm.reset();
+    bookDialog.close();
+});
+
 addBookToLibrary("The Lord of the Rings", "J. R. R. Tolkien", 1178, true);
-addBookToLibrary("1984", "George Orwell", 328, false)
+addBookToLibrary("1984", "George Orwell", 328, false);
 
 displayBooks();
