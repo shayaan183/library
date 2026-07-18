@@ -19,11 +19,23 @@ function addBookToLibrary(title, author, pages, isRead) {
     myLibrary.push(book);
 }
 
+function removeBookFromLibrary(id) {
+    const bookIndex = myLibrary.findIndex(book => book.id === id);
+
+    if(bookIndex !== -1) {
+        myLibrary.splice(bookIndex, 1);
+    }
+
+    displayBooks();
+}
+
 function displayBooks() {
     container.innerHTML = "";
 
     myLibrary.forEach((book) => {
         const bookCard = document.createElement("div");
+
+        bookCard.setAttribute("data-id", book.id);
 
         const title = document.createElement("h3");
         title.textContent = `${book.title}`;
@@ -37,10 +49,19 @@ function displayBooks() {
         const isRead = document.createElement("p");
         isRead.textContent = book.isRead ? "Read" : "Not yet read";
 
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Remove Book";
+        removeButton.classList.add("remove-button");
+
+        removeButton.addEventListener("click", () => {
+            removeBookFromLibrary(book.id);
+        })
+
         bookCard.appendChild(title);
         bookCard.appendChild(author);
         bookCard.appendChild(pages);
         bookCard.appendChild(isRead);
+        bookCard.appendChild(removeButton);
 
         container.appendChild(bookCard);
     });
@@ -71,6 +92,8 @@ bookForm.addEventListener("submit", (e) => {
     bookForm.reset();
     bookDialog.close();
 });
+
+
 
 addBookToLibrary("The Lord of the Rings", "J. R. R. Tolkien", 1178, true);
 addBookToLibrary("1984", "George Orwell", 328, false);
